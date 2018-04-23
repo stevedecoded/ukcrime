@@ -187,14 +187,14 @@ var crimeApi = {
             url: url,
             success: function(data, status, xhr) {
                 if (xhr.status != 200) {
-                    callback(null);
+                    callback(xhr.responseJSON);
                     return;
                 }
 
                 callback(data);
             },
             error: function(xhr, status, error) {
-                callback(null);
+                callback(xhr.responseJSON);
             },
             dataType: 'json'
         });
@@ -232,7 +232,7 @@ function setPostcode(postcodeData) {
         topText = 'There were no recorded criminal instances at postcode ' + postcodeData.postcode + ' in ' + year + '.';
     }
 
-    $('p.lead').fadeOut(400, function() {
+    $('#text').fadeOut(400, function() {
         $(this).text(topText).fadeIn();
     });
 
@@ -246,6 +246,10 @@ function setPostcode(postcodeData) {
 }
 
 $(document).ready(function() {
+    for (var i = year; i >= year - 2; i --) {
+        $('#searchForm select').append($('<option value="' + i + '">' + i + '</option>'));
+    }
+
     // fetch all possible crime category names for the set year
     crimeApi.getCrimeCategoriesForYear(year, function(categories) {
         crimeCategories = categories;
@@ -274,9 +278,10 @@ $(document).ready(function() {
     $('#searchForm').submit(function(event) {
         $('#errorBox').html('');
         var postcode = $('#postcodeSearch').val();
+        year = $('#searchForm select').val();
 
-        if (postcode in postcodeCache) {
-            setPostcode(postcodeCache[postcode]);
+        if (postcode in postcodeCache && year in postcodeCache[postcode]) {
+            setPostcode(postcodeCache[postcode][year]);
         } else {
             var form = $(this);
             form.find('button[type="submit"]').prop('disabled', true);
@@ -284,7 +289,14 @@ $(document).ready(function() {
             homeController.search(postcode, function(data) {
                 if (data.error == '') {
                     setPostcode(data.response);
-                    postcodeCache[data.response.postcode] = data.response;
+
+                    if (data.response.postcode in postcodeCache) {
+                        postcodeCache[data.response.postcode][year] = data.response;
+                    } else {
+                        postcodeCache[data.response.postcode] = {
+                            year: data.response
+                        };
+                    }
                 } else {
                     var alertBox = $('<p class="alert alert-danger">').text(data.error);
                     $('#errorBox').html(alertBox);
@@ -295,6 +307,14 @@ $(document).ready(function() {
         }
 
         event.preventDefault();
+        return false;
+    });
+
+    $('#suggestions a').click(function(e) {
+        $('#postcodeSearch').val($(this).data('postcode'));
+        $('#searchForm').submit();
+
+        e.preventDefault();
         return false;
     });
 });

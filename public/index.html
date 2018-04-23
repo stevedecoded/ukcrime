@@ -53,14 +53,21 @@
     <div class="container">
       <div class="text-center">
         <h1 class="display-4">UK Crime</h1>
-        <p class="lead">
+        <p id="text" class="lead">
             Find the most common crime at a postcode using the search field below.
+        </p>
+        <p id="suggestions" class="lead">
+            <a href="#" data-postcode="CM24 1RW">Stansted Airport</a>,
+            <a href="#" data-postcode="DA9 9SR">Bluewater Complex Kent</a>,
+            <a href="#" data-postcode="SE1 7PB">London Eye</a>,
+            <a href="#" data-postcode="SW1A 0AA">Houses of Parliament</a>
         </p>
         <div id="errorBox"></div>
         <p>
             <form method="post" action="" id="searchForm">
                 <div class="input-group input-group-lg">
                     <input id="postcodeSearch" name="postcode" type="text" class="form-control" placeholder="UK Postcode" aria-describedby="sizing-addon1" value="" />
+                    <select name="year" class="form-control"></select>
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn-primary" />Go<span class="spinner"> &nbsp; <i class="fa fa-sync fa-spin"></i></span></button>
                     </span>
@@ -69,7 +76,14 @@
         </p>
       </div>
 
-      <div id="map"></div>
+      <p id="map"></p>
+
+      <p class="text-center alert alert-info">
+        <strong>Scotland:</strong> Since only the British Transport Police provide data for Scotland, crime levels may appear much lower than they really are.
+      </p>
+      <p class="text-center">
+        Full code on <a href="https://github.com/stevedecoded/ukcrime">GitHub</a>
+      </p>
     </div> <!-- /container -->
 
     <!-- jQuery -->
