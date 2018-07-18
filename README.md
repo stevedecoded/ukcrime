@@ -2,8 +2,6 @@
 
 A webpage to show last year's most common crime at any UK postcode.
 
-[Live demo](http://ukcrime.net/)
-
 ## APIs used
 
 * [postcodes.io](http://postcodes.io/) - For UK postcode lat/lng
